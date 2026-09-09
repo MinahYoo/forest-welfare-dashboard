@@ -21,9 +21,12 @@ def proportional(total_runs, key):
     raw=key/key.sum()*total_runs
     allocation=np.floor(raw)
     remainder=int(round(total_runs-allocation.sum()))
-    # Preserve the original pandas tie order: several zero-participation regions
-    # have equal remainders, so changing the sorting algorithm changes the baseline.
-    allocation.loc[(raw-allocation).sort_values(ascending=False).index[:remainder]]+=1
+    # Float quicksort can dispatch to a different SIMD algorithm on x86 Linux,
+    # changing tied regions versus the original ARM Mac. Sorting Python float
+    # objects selects NumPy's generic quicksort with the original tie order.
+    # There are only 17 regions; values and the largest-remainder rule are unchanged.
+    order=(raw-allocation).astype(object).sort_values(ascending=False,kind='quicksort').index
+    allocation.loc[order[:remainder]]+=1
     return allocation
 
 
