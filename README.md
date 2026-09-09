@@ -1,5 +1,7 @@
 # 숲BTI · 해커톤 시연 대시보드
 
+공유 주소: **[숲BTI 대시보드](https://gu4qep8bbvrjanhw9bzeqf.streamlit.app/)**
+
 기존 GAP 활동추천 모델의 실제 추론, 지역 수요·공급 분석, ALIO 2023년 결산 63.21억원 기준 운영 최적화를 세 탭으로 제공합니다. 모델과 데이터는 로컬 파일입니다. 앱 실행 시 학습하거나 외부 API를 호출하지 않습니다.
 
 기존 `/Users/minah/K-ds/forest_dashboard`에서 병행 편집 중인 파일이 발견되어 이 구현은 `hackathon/forest_dashboard`에 분리했습니다.
