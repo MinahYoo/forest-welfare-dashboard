@@ -8,6 +8,8 @@
 
 Streamlit Community Cloud에서 이 저장소를 배포하면 노트북을 꺼도 공유 주소로 접속할 수 있습니다. GitHub 저장소 업로드만으로 앱이 실행되지는 않으므로 처음 한 번은 Cloud에서 앱을 생성해야 합니다.
 
+[배포 화면 바로 열기 — 저장소·브랜치·app.py 자동 입력](https://share.streamlit.io/deploy?repository=MinahYoo%2Fforest-welfare-dashboard&branch=main&mainModule=app.py)
+
 1. [Streamlit Community Cloud](https://share.streamlit.io)에서 `MinahYoo` GitHub 계정으로 로그인합니다.
 2. **Create app → Yup, I have an app**에서 아래 값을 지정합니다.
 
