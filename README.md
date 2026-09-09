@@ -131,6 +131,6 @@ python -m unittest discover -s tests -v
 
 ## 파일 구성
 
-`app.py`, `utils/{preprocessing,recommend,regional,optimize}.py`, `train_models.py`, `extract_data.py`, `models/{gap_activity,facility}/`, `data/`, `tests/`, `SOURCE_AUDIT.md`가 핵심입니다. `data/provenance.json`에 원본 파일 SHA-256을 저장합니다. `data/optimization_result.csv`는 준비 시 기본값으로 실제 계산한 결과이며 앱에서는 매번 요청 조건으로 다시 계산합니다.
+`app.py`, `assets/{style.css,forest-scene.svg}`, `utils/{preprocessing,recommend,regional,optimize}.py`, `train_models.py`, `extract_data.py`, `models/{gap_activity,facility}/`, `data/`, `tests/`, `SOURCE_AUDIT.md`가 핵심입니다. 화면 스타일과 숲 일러스트도 저장소 안의 파일을 사용합니다. `data/provenance.json`에 원본 파일 SHA-256을 저장합니다. `data/optimization_result.csv`는 준비 시 기본값으로 실제 계산한 결과이며 앱에서는 매번 요청 조건으로 다시 계산합니다.
 
 Streamlit의 [탭](https://docs.streamlit.io/develop/api-reference/layout/st.tabs)으로 두 화면을 구성하고, [AppTest](https://docs.streamlit.io/develop/api-reference/app-testing/st.testing.v1.apptest)로 입력과 클릭 흐름을 검증합니다. 탭 변경만으로 최적화나 재학습이 실행되지 않도록 계산은 버튼 안에 둡니다.

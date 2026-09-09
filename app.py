@@ -13,31 +13,18 @@ from utils.regional import load_data
 from utils.optimize import run_optimization
 
 st.set_page_config(page_title='숲BTI | 산림복지 의사결정',page_icon='🌲',layout='wide')
-st.markdown('''<style>
-html,body,[class*="css"],.stApp{font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif}
-.stApp{background:#f7f5ef;color:#18382d}
-[data-testid="stHeader"]{display:none}
-.block-container{max-width:1380px;padding-top:2rem;padding-bottom:4rem}
-h1,h2,h3{letter-spacing:-.045em;color:#173f30}
-h1{font-size:2.3rem!important;font-weight:750!important}
-[data-testid="stMetric"]{background:#fffdf7;border:1px solid #e0e3d8;border-radius:10px;padding:15px 18px}
-[data-testid="stMetricLabel"]{color:#526358}
-[data-testid="stMetricValue"]{color:#205d42;font-variant-numeric:tabular-nums}
-button[kind="primary"]{background:#205d42;border-color:#205d42}
-.stTabs [data-baseweb="tab-list"]{gap:28px;border-bottom:1px solid #d6ddce}
-.stTabs [data-baseweb="tab"]{height:58px;font-size:16px}
-.stTabs [aria-selected="true"]{color:#205d42;font-weight:700}
-.brand{font-size:12px;letter-spacing:.15em;color:#617567;font-weight:600}
-.flow{border-top:1px solid #cfdbcd;border-bottom:1px solid #cfdbcd;padding:14px 0;margin:16px 0 20px;color:#526358;line-height:1.8}
-.decision{background:#e8eee1;border-left:4px solid #205d42;padding:18px 22px;border-radius:0 8px 8px 0;font-size:17px;line-height:1.8}
-.small-note{font-size:12px;color:#667369;line-height:1.7}
-footer{visibility:hidden}
-</style>''',unsafe_allow_html=True)
-
-st.markdown('<div class="brand">FOREST WELFARE · DECISION LAB</div>',unsafe_allow_html=True)
-st.title('숲BTI')
-st.write('아직 해보지 않은 산림활동을 찾고, 실제 사업예산을 바탕으로 지역별 운영 배분을 설계합니다.')
-st.markdown('<div class="flow">01 개인의 새로운 활동　 →　 02 예산과 운영 배분</div>',unsafe_allow_html=True)
+style=(ROOT/'assets/style.css').read_text(encoding='utf-8')
+forest_scene=(ROOT/'assets/forest-scene.svg').read_text(encoding='utf-8')
+st.markdown(f'<style>{style}</style>',unsafe_allow_html=True)
+st.markdown(f'''<section class="forest-hero">
+<div class="hero-copy">
+<div class="hero-eyebrow">오늘은 어떤 숲을 만나볼까요?</div>
+<h1>숲BTI</h1>
+<p class="hero-description">나에게 맞는 새로운 산림활동을 찾고,<br>모두를 위한 숲의 기회를 함께 넓혀요.</p>
+<div class="hero-tags"><span>나를 위한 활동 추천</span><span>지역을 위한 운영 배분</span></div>
+</div>
+<div class="hero-art" aria-hidden="true">{forest_scene}</div>
+</section>''',unsafe_allow_html=True)
 
 try:
     assets=load_data()
@@ -50,15 +37,15 @@ detail_options={int(k):v for k,v in labels['detail_by_code'].items()}
 
 def score_chart(frame,label_col):
     chart=frame.copy();chart['모델 점수']=chart['score']*100
-    return alt.Chart(chart).mark_bar(color='#2c6a4b',cornerRadiusEnd=4).encode(
+    return alt.Chart(chart).mark_bar(color='#35a766',cornerRadiusEnd=6).encode(
         x=alt.X('모델 점수:Q',scale=alt.Scale(domain=[0,100]),axis=alt.Axis(tickCount=6),title='모델 점수 (0–100)'),
         y=alt.Y(f'{label_col}:N',sort='-x',title=None,scale=alt.Scale(paddingInner=.35,paddingOuter=.15),
                 axis=alt.Axis(labelOverlap=False,labelLimit=220)),
         tooltip=[label_col,alt.Tooltip('모델 점수:Q',format='.1f')]).properties(height=max(180,60*len(chart)+40))
 
 
-def horizontal(frame,name,value,color='#2c6a4b',height=480):
-    return alt.Chart(frame).mark_bar(color=color,cornerRadiusEnd=3).encode(
+def horizontal(frame,name,value,color='#35a766',height=480):
+    return alt.Chart(frame).mark_bar(color=color,cornerRadiusEnd=5).encode(
         x=alt.X(f'{value}:Q',title=value,axis=alt.Axis(tickCount=6)),
         y=alt.Y(f'{name}:N',sort='-x',title=None,scale=alt.Scale(paddingInner=.25),
                 axis=alt.Axis(labelOverlap=False,labelLimit=250)),
@@ -90,7 +77,7 @@ tab_person,tab_opt=st.tabs(['개인 맞춤 추천','운영 최적화'])
 with tab_person:
     st.header('나에게 맞는 새로운 산림활동 추천')
     left,right=st.columns([.43,.57],gap='large')
-    with left:
+    with left, st.container(border=True):
         mode=st.radio('입력 방식',['내 정보 입력','실제 조사 응답으로 시연','전체 설문 CSV'],horizontal=True,key='input_mode',on_change=reset_person)
         user=None;facility_user=None;natural_experience=[];form_sido='서울'
         if mode=='내 정보 입력':
@@ -151,7 +138,7 @@ with tab_person:
         if natural_experience:
             st.caption('실제 세부 응답에 기록된 경험도 함께 제외합니다: '+' · '.join(natural_experience))
         clicked=st.button('새로운 활동 추천 받기',type='primary',use_container_width=True,disabled=user is None,key='recommend')
-    with right:
+    with right, st.container(border=True):
         signature=json.dumps({'user':user,'facility':facility_user,'done':done},ensure_ascii=False,default=str,sort_keys=True)
         if clicked:
             try:
@@ -182,8 +169,13 @@ with tab_person:
         elif saved:
             st.info('입력이 바뀌었습니다. 추천 버튼을 눌러 새 결과를 확인하세요.')
         else:
-            st.subheader('새로운 숲 경험을 찾아보세요')
-            st.write('내 정보를 입력하고 이미 해본 활동을 선택하면, 남은 활동 중 GAP 모델이 추천합니다.')
+            st.markdown('''<div class="welcome-card">
+<div class="welcome-icon" aria-hidden="true">🌱</div>
+<div class="hero-eyebrow">나만의 숲 취향 찾기</div>
+<h3>새로운 숲 경험을 찾아보세요</h3>
+<p>내 정보를 입력하고 이미 해본 활동을 골라주세요.<br>아직 경험하지 않은 산림활동을 추천해드려요.</p>
+<p class="welcome-note">입력 후 ‘새로운 활동 추천 받기’를 눌러보세요.</p>
+</div>''',unsafe_allow_html=True)
             st.caption('실제 조사 응답 시연을 선택하면 전체 설문 입력으로 바로 확인할 수 있습니다.')
     with st.expander('모델 정보 · 입력 범위와 검증 결과'):
         g=card['gap_activity'];m=g['metrics']
@@ -196,7 +188,7 @@ with tab_person:
 with tab_opt:
     st.header('AI 기반 산림복지 자원배분 최적화')
     left,right=st.columns([.3,.7],gap='large')
-    with left:
+    with left, st.container(border=True):
         budget_eok=st.number_input('총 사업예산 (억 원)',0.,1000.,const['budget_won']/1e8,step=1.,format='%.2f',key='budget')
         cost_man=st.number_input('회당 운영비 (만원)',.01,100000.,const['cost_per_run_won']/1e4,step=10.,format='%.4f',key='cost')
         capacity=st.number_input('회당 수용인원 (명)',1,100000,const['capacity'],key='capacity')
@@ -205,7 +197,7 @@ with tab_opt:
         st.caption('63.21억 원은 ALIO 2023년 숲체험교육사업 결산입니다. 회당 약 332만원은 참여실적에서 역산한 평균 단가입니다.')
         st.caption('운영횟수의 임의 지역 상한과 총인력 상한을 두지 않습니다. 필요 인력은 회당 2인 가정으로 산출합니다.')
     parameters=dict(budget=budget_eok*1e8,cost_per_run=cost_man*1e4,capacity=int(capacity),target_rate=rate/100)
-    with right:
+    with right, st.container(border=True):
         if execute:
             try:
                 with st.spinner('예산과 지역 목표에 맞춰 배분을 계산하고 있습니다…'):
@@ -223,7 +215,7 @@ with tab_opt:
             compare=result['comparison'].copy()
             if result['coverage']>0:
                 compare['최적화 대비 지수']=compare['격차가중 커버리지']/result['coverage']*100
-                st.altair_chart(horizontal(compare,'방식','최적화 대비 지수',color='#a96641',height=150),use_container_width=True)
+                st.altair_chart(horizontal(compare,'방식','최적화 대비 지수',color='#e5ac36',height=150),use_container_width=True)
             else:st.info('현재 입력에서 배정 가능한 운영횟수 또는 목표가 0입니다.')
             st.caption('세 방식에 같은 총 운영횟수를 배분하고, 동일한 0–100 우선확충지수로 평가합니다. 최적화 목적함수의 양수 z 가중치와 평가 지표는 구분됩니다.')
             if result['budget_utilization']<95 and result['total_runs']>0:
@@ -239,8 +231,12 @@ with tab_opt:
             st.download_button('최적 배분 CSV 내려받기',result['allocation'].to_csv(index=False).encode('utf-8-sig'),'optimization_result.csv','text/csv')
         elif result:st.info('설정이 바뀌었습니다. 최적 배분 실행을 눌러 다시 계산하세요.')
         else:
-            st.subheader('같은 자원을, 필요한 지역에')
-            st.write('실제 사업예산을 기준으로 지역별 운영횟수를 계산하고 인구비례·기존 참여비례 배분과 비교합니다.')
+            st.markdown('''<div class="welcome-card optimization-welcome">
+<div class="welcome-icon" aria-hidden="true">☀️</div>
+<div class="hero-eyebrow">더 많은 곳에 숲의 기회를</div>
+<h3>같은 자원을, 필요한 지역에</h3>
+<p>사업예산과 운영 목표를 정하면<br>지역별 운영횟수와 배분 효과를 확인할 수 있어요.</p>
+</div>''',unsafe_allow_html=True)
             st.info('왼쪽의 최적 배분 실행 버튼으로 시연을 시작하세요.')
 
 st.divider()
