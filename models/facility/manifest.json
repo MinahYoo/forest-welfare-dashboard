@@ -1,0 +1,85 @@
+{
+  "signature": "ff6a9397fd742cf29e9d6b27cea46ab71161a2a1a2d16d4f98a812fdd39ee304",
+  "labels": [
+    {
+      "label": "자연휴양림",
+      "file": "label_00.cbm",
+      "signature": "ff6a9397fd742cf29e9d6b27cea46ab71161a2a1a2d16d4f98a812fdd39ee304",
+      "sha256": "a67dceaf76e1e6d078e7676875906288bb2acf661bad3b9cf594ee28b9e234c7"
+    },
+    {
+      "label": "산림욕장",
+      "file": "label_01.cbm",
+      "signature": "ff6a9397fd742cf29e9d6b27cea46ab71161a2a1a2d16d4f98a812fdd39ee304",
+      "sha256": "a7df47f26cefd2b43cfa9535f94e246874981191e299ad126a6b903795f43e4b"
+    },
+    {
+      "label": "치유의숲",
+      "file": "label_02.cbm",
+      "signature": "ff6a9397fd742cf29e9d6b27cea46ab71161a2a1a2d16d4f98a812fdd39ee304",
+      "sha256": "50f2f620d2a291a96da0317cb7068056f140b5c2fcbed817f9eef93588c2d856"
+    },
+    {
+      "label": "숲길",
+      "file": "label_03.cbm",
+      "signature": "ff6a9397fd742cf29e9d6b27cea46ab71161a2a1a2d16d4f98a812fdd39ee304",
+      "sha256": "e844949dfe7060959e1b43aa76575bc379473dfddf05955f01c7f9847362d4de"
+    },
+    {
+      "label": "유아숲체험원",
+      "file": "label_04.cbm",
+      "signature": "ff6a9397fd742cf29e9d6b27cea46ab71161a2a1a2d16d4f98a812fdd39ee304",
+      "sha256": "fffb73790c80fc1681be3ca10c9a04f6590dd33e7c1ba9698f7fd14d20385825"
+    },
+    {
+      "label": "산림교육센터",
+      "file": "label_05.cbm",
+      "signature": "ff6a9397fd742cf29e9d6b27cea46ab71161a2a1a2d16d4f98a812fdd39ee304",
+      "sha256": "5c90e50a7157e92634796fbc901e296ab7f2e3e044836c4c519f314ee7caf8e2"
+    },
+    {
+      "label": "수목장림",
+      "file": "label_06.cbm",
+      "signature": "ff6a9397fd742cf29e9d6b27cea46ab71161a2a1a2d16d4f98a812fdd39ee304",
+      "sha256": "5da15e5926624f159aa6e8cd6aa5a6d5728283dda18be9baa19ce7f099601573"
+    },
+    {
+      "label": "숲속야영장",
+      "file": "label_07.cbm",
+      "signature": "ff6a9397fd742cf29e9d6b27cea46ab71161a2a1a2d16d4f98a812fdd39ee304",
+      "sha256": "9f53692a1dca0ecbe4ae2daf249ed6b34a25dbac254824e0ab85770444a12c56"
+    },
+    {
+      "label": "산림레포츠시설",
+      "file": "label_08.cbm",
+      "signature": "ff6a9397fd742cf29e9d6b27cea46ab71161a2a1a2d16d4f98a812fdd39ee304",
+      "sha256": "d8f5440425308a76a2689894c470de5ae00d7c21b89b4756394dc5151f2fbcbf"
+    },
+    {
+      "label": "산림복지단지",
+      "file": "label_09.cbm",
+      "signature": "ff6a9397fd742cf29e9d6b27cea46ab71161a2a1a2d16d4f98a812fdd39ee304",
+      "sha256": "d244ecfdb84b2d6c3d30d24e53caf48b9c972d2e1262200febaa8cc481f06a4f"
+    },
+    {
+      "label": "수목원",
+      "file": "label_10.cbm",
+      "signature": "ff6a9397fd742cf29e9d6b27cea46ab71161a2a1a2d16d4f98a812fdd39ee304",
+      "sha256": "5e54c2f1c80af3d8e2dd85ad312a6421732c88ed76efa451eff79f944132a7d5"
+    },
+    {
+      "label": "정원",
+      "file": "label_11.cbm",
+      "signature": "ff6a9397fd742cf29e9d6b27cea46ab71161a2a1a2d16d4f98a812fdd39ee304",
+      "sha256": "32f986ea16db7d9d2c44329bd2275866df0f04cb218df65cf2000fa34b4516eb"
+    },
+    {
+      "label": "목재문화체험장",
+      "file": "label_12.cbm",
+      "signature": "ff6a9397fd742cf29e9d6b27cea46ab71161a2a1a2d16d4f98a812fdd39ee304",
+      "sha256": "2d1f186cf15b93e5140adc268d6f1bf24add6c6e759d613b3c01b63e1c050fe1"
+    }
+  ],
+  "model_kind": "facility",
+  "n_train": 11437
+}

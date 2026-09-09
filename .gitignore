@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+*.log
+.DS_Store
+.env
+.env.*
+.streamlit/secrets.toml
+.venv/
+venv/
+.pytest_cache/
+.coverage
+catboost_info/

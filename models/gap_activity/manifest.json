@@ -1,0 +1,43 @@
+{
+  "signature": "72645e0fe608adab8d10df82f43629cc9c726925aa1b2d97b1806ec5295649fe",
+  "labels": [
+    {
+      "label": "등산·트레킹형",
+      "file": "label_00.cbm",
+      "signature": "72645e0fe608adab8d10df82f43629cc9c726925aa1b2d97b1806ec5295649fe",
+      "sha256": "a90244e07f9503b0148d14662acaeb1bcfc2a7c12070a16143da955d000dcc8d"
+    },
+    {
+      "label": "자연감상·산책형",
+      "file": "label_01.cbm",
+      "signature": "72645e0fe608adab8d10df82f43629cc9c726925aa1b2d97b1806ec5295649fe",
+      "sha256": "d8b1d8ad3e4d0aa9cf328bf7f319ec4e2544319aec207ec917c8e25a0d2009e5"
+    },
+    {
+      "label": "캠핑·야영형",
+      "file": "label_02.cbm",
+      "signature": "72645e0fe608adab8d10df82f43629cc9c726925aa1b2d97b1806ec5295649fe",
+      "sha256": "2eea73da75dcbe3dee5e08f438a6b20630e3be6869afe0edc81b3d2490d4216e"
+    },
+    {
+      "label": "체험·학습형",
+      "file": "label_03.cbm",
+      "signature": "72645e0fe608adab8d10df82f43629cc9c726925aa1b2d97b1806ec5295649fe",
+      "sha256": "ab9419007f492055078b33fbcdea43268991619b014eaa148440998d9499c1e0"
+    },
+    {
+      "label": "치유·웰니스형",
+      "file": "label_04.cbm",
+      "signature": "72645e0fe608adab8d10df82f43629cc9c726925aa1b2d97b1806ec5295649fe",
+      "sha256": "dc9b42bc1b4ebb03a247230c45a011b4991dcda3337927d039601c02977905c9"
+    },
+    {
+      "label": "레포츠·모험형",
+      "file": "label_05.cbm",
+      "signature": "72645e0fe608adab8d10df82f43629cc9c726925aa1b2d97b1806ec5295649fe",
+      "sha256": "8731027b02e710467f2d22e53cd18d2ce0f03797a179b41ad78b9016562baace"
+    }
+  ],
+  "model_kind": "gap_activity",
+  "n_train": 7626
+}

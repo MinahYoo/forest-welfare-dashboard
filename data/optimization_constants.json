@@ -1,0 +1,12 @@
+{
+  "budget_won": 6321000000.0,
+  "cost_per_run_won": 3321271.6916890265,
+  "capacity": 300,
+  "target_rate": 0.01,
+  "staff_per_run": 2,
+  "participants_2023": 570956.0,
+  "staff_note": "회당 2인 가정의 인력-회차이며 고유 인원/FTE가 아님",
+  "cost_note": "2023 결산 ÷ 참여실적 × 300명으로 역산한 평균 단가",
+  "budget_note": "ALIO 숲체험교육사업 2023 결산 6,321백만원",
+  "source": "분석산출물/pkgC_operations/pkgC_optimization_v2.py"
+}
