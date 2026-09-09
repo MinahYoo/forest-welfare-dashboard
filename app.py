@@ -35,7 +35,7 @@ footer{visibility:hidden}
 </style>''',unsafe_allow_html=True)
 
 st.markdown('<div class="brand">FOREST WELFARE · DECISION LAB</div>',unsafe_allow_html=True)
-st.title('숲BTI · 새로운 경험에서 지역의 기회로')
+st.title('숲BTI')
 st.write('아직 해보지 않은 산림활동을 찾고, 실제 사업예산을 바탕으로 지역별 운영 배분을 설계합니다.')
 st.markdown('<div class="flow">01 개인의 새로운 활동　 →　 02 예산과 운영 배분</div>',unsafe_allow_html=True)
 
