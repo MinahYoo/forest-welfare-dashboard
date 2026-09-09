@@ -22,7 +22,7 @@ Streamlit Community Cloud에서 이 저장소를 배포하면 노트북을 꺼�
    | App URL (사용 가능하면) | `forest-welfare-minah-2026` |
 
 3. **Deploy**를 누릅니다. 학습 없이 패키지 설치 후 저장된 19개 모델을 불러옵니다. Secrets는 필요하지 않습니다.
-4. 저장소는 비공개로 보관합니다. 다른 사람이 로그인 없이 이용하려면 Cloud 앱의 **Settings → Sharing → This app is public and searchable**를 선택합니다.
+4. 저장소는 소유자의 승인으로 공개 전환했습니다. 코드·저장된 모델·시연 데이터가 공개돼 있으며 비공개 저장소 접근 권한 없이 배포 파일을 읽을 수 있습니다. 다른 사람이 로그인 없이 이용하려면 Cloud 앱의 **Settings → Sharing**에서 공개 상태인지 확인합니다.
 5. 배포가 끝난 뒤 Cloud가 표시한 실제 `https://….streamlit.app` 주소를 공유합니다. 위 App URL은 희망 이름이며 배포 전에는 접속 주소로 보장되지 않습니다.
 
 모델 약 77MB와 실행 데이터가 저장소에 포함돼 있습니다. 실행 시 원본 Desktop 경로가 필요하지 않습니다. `.streamlit/config.toml`은 클라우드 프록시가 접속할 수 있게 `0.0.0.0`에 바인딩하고 설문 CSV 업로드를 5MB로 제한합니다. 기본 인증·XSRF 설정은 유지합니다. GitHub Actions는 Linux/Python 3.12에서 모델 로딩, 원본 수치 재현, 세 탭의 입력과 클릭을 검사합니다.
