@@ -1,8 +1,8 @@
 # 숲BTI · 해커톤 시연 대시보드
 
-공유 주소: **[숲BTI 대시보드](https://gu4qep8bbvrjanhw9bzeqf.streamlit.app/)**
+공유 주소: **[숲BTI 대시보드](https://minahyoo-forest-welfare-dashboard-app-2wa44b.streamlit.app/)**
 
-기존 GAP 활동추천 모델의 실제 추론, 지역 수요·공급 분석, ALIO 2023년 결산 63.21억원 기준 운영 최적화를 세 탭으로 제공합니다. 모델과 데이터는 로컬 파일입니다. 앱 실행 시 학습하거나 외부 API를 호출하지 않습니다.
+기존 GAP 활동추천 모델의 실제 추론과 ALIO 2023년 결산 63.21억원 기준 운영 최적화를 두 탭으로 제공합니다. 모델과 데이터는 로컬 파일입니다. 앱 실행 시 학습하거나 외부 API를 호출하지 않습니다.
 
 기존 `/Users/minah/K-ds/forest_dashboard`에서 병행 편집 중인 파일이 발견되어 이 구현은 `hackathon/forest_dashboard`에 분리했습니다.
 
@@ -27,7 +27,7 @@ Streamlit Community Cloud에서 이 저장소를 배포하면 노트북을 꺼�
 4. 저장소는 소유자의 승인으로 공개 전환했습니다. 코드·저장된 모델·시연 데이터가 공개돼 있으며 비공개 저장소 접근 권한 없이 배포 파일을 읽을 수 있습니다. 다른 사람이 로그인 없이 이용하려면 Cloud 앱의 **Settings → Sharing**에서 공개 상태인지 확인합니다.
 5. 배포가 끝난 뒤 Cloud가 표시한 실제 `https://….streamlit.app` 주소를 공유합니다. 위 App URL은 희망 이름이며 배포 전에는 접속 주소로 보장되지 않습니다.
 
-모델 약 77MB와 실행 데이터가 저장소에 포함돼 있습니다. 실행 시 원본 Desktop 경로가 필요하지 않습니다. `.streamlit/config.toml`은 클라우드 프록시가 접속할 수 있게 `0.0.0.0`에 바인딩하고 설문 CSV 업로드를 5MB로 제한합니다. 기본 인증·XSRF 설정은 유지합니다. GitHub Actions는 Linux/Python 3.12에서 모델 로딩, 원본 수치 재현, 세 탭의 입력과 클릭을 검사합니다.
+모델 약 77MB와 실행 데이터가 저장소에 포함돼 있습니다. 실행 시 원본 Desktop 경로가 필요하지 않습니다. `.streamlit/config.toml`은 클라우드 프록시가 접속할 수 있게 `0.0.0.0`에 바인딩하고 설문 CSV 업로드를 5MB로 제한합니다. 기본 인증·XSRF 설정은 유지합니다. GitHub Actions는 Linux/Python 3.12에서 모델 로딩, 원본 수치 재현, 두 탭의 입력과 클릭을 검사합니다.
 
 설정 근거: [공식 배포 안내](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/deploy), [공개 앱 공유 설정](https://docs.streamlit.io/deploy/streamlit-community-cloud/share-your-app).
 
@@ -80,11 +80,11 @@ GAP 6개와 시설 13개의 `.cbm`은 `models/gap_activity/`, `models/facility/`
 
 GAP 참고 성능은 기존 가구그룹 5-fold OOF입니다. P@1 0.681, P@2 0.555, LRAP 0.843, Macro-F1 0.591, Macro PR-AUC는 fold 평균 0.585 / OOF 통합 약 0.582입니다. P@k는 GAP 양성 활동이 있는 5,579명만 포함하며 양성이 없는 2,047명을 제외합니다. 시설 Macro-F1 0.6604, LRAP 0.8270, P@2 0.7201입니다.
 
-## 지역 분석과 운영 최적화
+## 운영 최적화의 지역 수요·공급 기준
 
-개인 GAP 예측, 지역 수요 집계, 예산 배분은 **연결된 의사결정 흐름**입니다. 지역 수요는 기존 Q20 설문 가중집계입니다. 앱에서 한 사람을 입력할 때마다 전국 수요가 바뀌거나 개인 GAP 예측을 전국 합계로 환산하는 구조가 아닙니다.
+앱은 개인 맞춤 추천과 운영 최적화로 구성합니다. 운영 최적화에 쓰는 지역 수요는 기존 Q20 설문 가중집계입니다. 앱에서 한 사람을 입력할 때마다 전국 수요가 바뀌거나 개인 GAP 예측을 전국 합계로 환산하는 구조가 아닙니다.
 
-최종 원점수는 `z(미충족잠재수요율) + z(-log1p(자연휴양림 수용인원 / 인구 × 100000))`입니다. 차트와 평가에는 원점수를 0–100으로 환산한 지수를 쓰고 목적함수에는 다시 표준화한 z의 양수 부분을 씁니다. 원본과 같은 표본 표준편차(ddof=1)를 사용합니다. 접근성·실제 이용 수준은 보조 지표로 함께 표시합니다. 자연휴양림 공급밀도가 모든 시설 유형의 충분도를 의미하지는 않습니다.
+최종 원점수는 `z(미충족잠재수요율) + z(-log1p(자연휴양림 수용인원 / 인구 × 100000))`입니다. 평가에는 원점수를 0–100으로 환산한 지수를 쓰고 목적함수에는 다시 표준화한 z의 양수 부분을 씁니다. 원본과 같은 표본 표준편차(ddof=1)를 사용합니다. 자연휴양림 공급밀도가 모든 시설 유형의 충분도를 의미하지는 않습니다.
 
 `run_optimization(budget, cost_per_run, capacity, target_rate)`의 금액 단위는 **원**, 목표율은 비율(`0.01` = 1%)입니다.
 
@@ -109,9 +109,8 @@ subject to
 
 1. 개인 맞춤 추천에서 정보를 입력하고 등산·트레킹형과 자연감상·산책형을 경험 목록에 선택합니다. 필요한 경우 세부 경험도 입력합니다.
 2. 새로운 활동 추천 받기를 누르고 경험한 활동이 Top 3에 없음을 확인합니다. 전체 설문 추론은 실제 조사 응답 시연 모드에서 확인합니다.
-3. 지역 수요 분석에서 서울과 강원을 비교합니다. 수요가 높아도 기존 공급이 많은 지역의 정책 판단은 다르다는 점을 설명합니다.
-4. 운영 최적화에서 기본 63.21억원을 확인하고 최적 배분 실행을 누릅니다.
-5. 지역별 운영횟수, 같은 총량의 기준선 비교, 예산 사용률과 필요 인력-회차를 설명합니다. 예산/목표율을 바꿔 다시 실행합니다.
+3. 운영 최적화에서 기본 63.21억원을 확인하고 최적 배분 실행을 누릅니다.
+4. 지역별 운영횟수, 같은 총량의 기준선 비교, 예산 사용률과 필요 인력-회차를 설명합니다. 예산/목표율을 바꿔 다시 실행합니다.
 
 ## 검증 및 문제 해결
 
@@ -121,7 +120,7 @@ python -m unittest discover -s tests -v
 
 실제 저장 모델의 입력 복원과 예측 일치, 64가지 경험 제외 조합, 0.3/0.5/1% 원본 최적화 결과, 예산·수용력 제약과 0 예산, Streamlit 클릭 시연 흐름을 검사합니다. 이 검사는 기능 검증이며 추천 정확도를 새로 측정하는 검증은 아닙니다.
 
-2026-09-10 검증: 테스트 4개 그룹 모두 통과했습니다. 실제 Chrome에서도 세 탭의 추천·지역 분석·최적화 결과와 기본 KPI를 확인했으며 로컬 서버 health 응답은 `ok`였습니다. 확인 화면은 `screenshots/01_personal.png`, `02_regional.png`, `03_optimization.png`에 있습니다.
+초기 검증 화면은 `screenshots/01_personal.png`, `02_regional.png`, `03_optimization.png`에 있습니다. 이 화면은 지역 수요 분석 탭을 제거하기 전 기록입니다. 현재 자동 검증은 개인 맞춤 추천과 운영 최적화 두 탭을 대상으로 합니다.
 
 - 모델 누락/해시 불일치: `models/` 전체 복사 여부를 확인하고 일회성 저장 스크립트를 실행합니다. 앱이 임의 모델로 대체하지 않습니다.
 - 데이터 누락: `extract_data.py --project ...`의 정본 경로와 예산 증빙·원자료 파일을 확인합니다.
@@ -134,4 +133,4 @@ python -m unittest discover -s tests -v
 
 `app.py`, `utils/{preprocessing,recommend,regional,optimize}.py`, `train_models.py`, `extract_data.py`, `models/{gap_activity,facility}/`, `data/`, `tests/`, `SOURCE_AUDIT.md`가 핵심입니다. `data/provenance.json`에 원본 파일 SHA-256을 저장합니다. `data/optimization_result.csv`는 준비 시 기본값으로 실제 계산한 결과이며 앱에서는 매번 요청 조건으로 다시 계산합니다.
 
-Streamlit의 [탭](https://docs.streamlit.io/develop/api-reference/layout/st.tabs)으로 세 화면을 구성하고, [AppTest](https://docs.streamlit.io/develop/api-reference/app-testing/st.testing.v1.apptest)로 입력과 클릭 흐름을 검증합니다. 탭 변경만으로 최적화나 재학습이 실행되지 않도록 계산은 버튼 안에 둡니다.
+Streamlit의 [탭](https://docs.streamlit.io/develop/api-reference/layout/st.tabs)으로 두 화면을 구성하고, [AppTest](https://docs.streamlit.io/develop/api-reference/app-testing/st.testing.v1.apptest)로 입력과 클릭 흐름을 검증합니다. 탭 변경만으로 최적화나 재학습이 실행되지 않도록 계산은 버튼 안에 둡니다.

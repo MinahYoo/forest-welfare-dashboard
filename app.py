@@ -1,4 +1,4 @@
-"""Offline hackathon dashboard: existing GAP models → regional analysis → allocation."""
+"""Offline hackathon dashboard: existing GAP recommendations and resource allocation."""
 from __future__ import annotations
 import json
 from pathlib import Path
@@ -36,14 +36,14 @@ footer{visibility:hidden}
 
 st.markdown('<div class="brand">FOREST WELFARE · DECISION LAB</div>',unsafe_allow_html=True)
 st.title('숲BTI · 새로운 경험에서 지역의 기회로')
-st.write('아직 해보지 않은 산림활동을 찾고, 지역의 수요·공급을 살펴 실제 사업예산의 배분을 설계합니다.')
-st.markdown('<div class="flow">01 개인의 새로운 활동　 →　 02 지역 수요·공급 분석　 →　 03 예산과 운영 배분</div>',unsafe_allow_html=True)
+st.write('아직 해보지 않은 산림활동을 찾고, 실제 사업예산을 바탕으로 지역별 운영 배분을 설계합니다.')
+st.markdown('<div class="flow">01 개인의 새로운 활동　 →　 02 예산과 운영 배분</div>',unsafe_allow_html=True)
 
 try:
     assets=load_data()
 except (FileNotFoundError,ValueError) as exc:
     st.error(str(exc));st.code('python extract_data.py');st.stop()
-reg=assets['regional'];codes=assets['codes'];card=assets['card'];const=assets['constants']
+codes=assets['codes'];card=assets['card'];const=assets['constants']
 labels=json.loads((ROOT/'data/activity_labels.json').read_text())
 detail_options={int(k):v for k,v in labels['detail_by_code'].items()}
 
@@ -86,7 +86,7 @@ def reset_person():
     st.session_state.pop('recommendation_result',None)
 
 
-tab_person,tab_region,tab_opt=st.tabs(['개인 맞춤 추천','지역 수요 분석','운영 최적화'])
+tab_person,tab_opt=st.tabs(['개인 맞춤 추천','운영 최적화'])
 with tab_person:
     st.header('나에게 맞는 새로운 산림활동 추천')
     left,right=st.columns([.43,.57],gap='large')
@@ -192,32 +192,6 @@ with tab_person:
         st.write(f"GAP PR-AUC: fold 평균 {m['PR_AUC_macro']:.3f}, OOF 통합 Macro {g['pooled_macro_pr_auc']:.3f}. 인기순 P@1 {g['naive_p_at_1']:.3f}, 경험 제외 인기순 {g['baseline_p_at_1']:.3f}.")
         st.caption('GAP P@k는 정답 활동이 있는 5,579명만 평가하며 정답 없는 2,047명은 제외합니다. 간편 입력 화면의 성능은 별도 미검증입니다. 6대분류 단위로 경험을 제외합니다.')
         st.caption('활동 입력에서 Q17 및 Q20·Q19_5·Q21 계열 제외. 시설 입력에서 해당 타깃 Q20_5 제외. 원래 모델의 입력 순서·문자형 범주·결측 규칙을 보존합니다.')
-
-with tab_region:
-    st.header('지역별 산림복지 수요·공급 분석')
-    metric_row([('분석지역','17개 시도'),('실측 사업예산',f"{const['budget_won']/1e8:.1f}억 원"),
-                ('정책목표 인원',f"{reg['인구'].sum()*const['target_rate']/1e4:.1f}만 명"),('회당 수용인원',f"{const['capacity']}명")])
-    st.caption('예산은 2023년 결산, 정책목표는 인구의 1% 시나리오입니다. 개인 추천과 연결해 살펴보는 기존 지역 분석이며, 방금 입력한 한 사람의 예측을 지역 수요로 환산하지 않습니다.')
-    a,b=st.columns([.6,.4],gap='large')
-    with a:
-        st.subheader('공급까지 고려한 우선확충 필요도')
-        st.altair_chart(horizontal(reg,'sido','우선확충지수'),use_container_width=True)
-    with b:
-        region=st.selectbox('자세히 볼 지역',list(SIDO_CODES),index=list(SIDO_CODES).index(form_sido),key='analysis_region')
-        row=reg.set_index('sido').loc[region]
-        st.subheader(region)
-        metric_row([('미충족잠재수요율',f"{row['미충족잠재수요율']:.1f}%"),('우선확충지수',f"{row['우선확충지수']:.1f}")])
-        st.write(f"**수요 {row['수요수준']} · {row['공급수준']}**")
-        detail=pd.DataFrame({'항목':['자연휴양림 수용인원','10만 명당 수용인원','최근접 시설 직선거리','시설 이용경험률'],
-                             '값':[f"{row['자연휴양림_수용인원']:,.0f}명",f"{row['공급_10만명당']:,.1f}명",f"{row['최근접시설거리_km']:.1f}km",f"{row['시설이용경험률']:.1f}%"]})
-        st.dataframe(detail,hide_index=True,use_container_width=True)
-        st.markdown(f'<div class="decision">{row["정책판단"]}</div>',unsafe_allow_html=True)
-        st.caption('수요가 높아도 기존 공급이 많은 지역은 시설 이용전환과 접근 연계를 함께 검토합니다.')
-    with st.expander('지역 지수와 자료 기준'):
-        st.write('원점수 = z(미충족잠재수요율) + z(−log1p(인구 10만 명당 자연휴양림 수용인원)). 표시 지수는 0–100 환산, 최적화는 원점수를 다시 표준화한 z의 양수 부분을 사용합니다.')
-        st.caption('접근성은 별도 산출물의 시도 중심 기준 직선거리 보조지표입니다. 공급지표는 자연휴양림 수용력 중심이며 전체 시설의 충분도를 보증하지 않습니다. 정책 문구의 높음/낮음은 전국 시도 중앙값 대비입니다.')
-        st.dataframe(reg,hide_index=True,use_container_width=True)
-    st.download_button('지역 분석 CSV 내려받기',reg.to_csv(index=False).encode('utf-8-sig'),'regional_index.csv','text/csv')
 
 with tab_opt:
     st.header('AI 기반 산림복지 자원배분 최적화')

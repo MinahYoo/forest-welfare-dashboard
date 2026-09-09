@@ -75,7 +75,7 @@ class DashboardTests(unittest.TestCase):
         from streamlit.testing.v1 import AppTest
         at=AppTest.from_file(str(ROOT/'app.py'),default_timeout=40).run()
         self.assertFalse(at.exception)
-        self.assertEqual([t.label for t in at.tabs],['개인 맞춤 추천','지역 수요 분석','운영 최적화'])
+        self.assertEqual([t.label for t in at.tabs],['개인 맞춤 추천','운영 최적화'])
         at.button(key='recommend').click().run()
         self.assertFalse(at.exception);self.assertFalse(at.error)
         at.multiselect(key='experienced').set_value(BROAD_LABELS).run()
