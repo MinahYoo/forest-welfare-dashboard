@@ -10,5 +10,7 @@
   "분석산출물/pkgC_operations/param_reality_check.csv": "8b7b66a0ab850a2b0f12b7e9d4e7c714207b02ca3c04a1f3873993594a2efe4e",
   "외부데이터/시군구_수급_자연휴양림.csv": "da85631b74e061bcaaf345e2d04773c7848074175dd934191d1358ab7b2b87e6",
   "본선_준비/experiments/results/regional_supply_indicators.csv": "04ce37aaa86e20a1d74f3f1ffeba434761ba843e87fed062d904f862370d3653",
-  "외부데이터/(증빙) 수입지출 세부현황(2023년).xlsx": "fffa67cbbf9879f2bb8cc6ed4b85ccf91967e8b8e59034176aabf38121de7592"
+  "외부데이터/(증빙) 수입지출 세부현황(2023년).xlsx": "fffa67cbbf9879f2bb8cc6ed4b85ccf91967e8b8e59034176aabf38121de7592",
+  "분석산출물/personal_recommender/webapp/data/facilities.json": "343f8c1294c7888897cf3fe3a5e2ae82b7910411a6502edf1ada9a125060f9f6",
+  "분석산출물/personal_recommender/webapp/data/sigungu_centroids.json": "693fb0f66be88b5c05e52f56117a1872bfac7bbace7b1daa4ac5f7e08ed067b2"
 }

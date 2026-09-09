@@ -2,6 +2,7 @@
 from __future__ import annotations
 import json
 from pathlib import Path
+from urllib.parse import quote
 
 import altair as alt
 import pandas as pd
@@ -11,6 +12,7 @@ from utils.preprocessing import BROAD_LABELS,SIDO_CODES,ROOT,options_for,experie
 from utils.recommend import predict_new_activity,predict_facility
 from utils.regional import load_data
 from utils.optimize import run_optimization
+from utils.nearby import nearby_facilities
 
 st.set_page_config(page_title='숲BTI | 산림복지 의사결정',page_icon='🌲',layout='wide')
 style=(ROOT/'assets/style.css').read_text(encoding='utf-8')
@@ -79,7 +81,7 @@ with tab_person:
     left,right=st.columns([.43,.57],gap='large')
     with left, st.container(border=True):
         mode=st.radio('입력 방식',['내 정보 입력','실제 조사 응답으로 시연','전체 설문 CSV'],horizontal=True,key='input_mode',on_change=reset_person)
-        user=None;facility_user=None;natural_experience=[];form_sido='서울'
+        user=None;facility_user=None;natural_experience=[];form_sido='서울';nearby_sigungu=None
         if mode=='내 정보 입력':
             st.caption('연령은 학습 조사와 같은 2025년 기준입니다. 간편 입력 결과는 참고 추천으로 확인해 주세요.')
             a,b=st.columns(2)
@@ -97,6 +99,7 @@ with tab_person:
             region_codes=codes[codes.sido==form_sido]
             district=region_codes[['CO12','sigungu']].drop_duplicates().set_index('CO12').sigungu.to_dict()
             sigungu=st.selectbox('시군구',[None]+list(district),format_func=lambda x:'선택 안 함' if x is None else f'{district[x]} · 조사코드 {x}',key='sigungu')
+            nearby_sigungu=district.get(sigungu)
             eup_options=region_codes[region_codes.CO12==sigungu].CO13.unique().tolist() if sigungu is not None else []
             eup=st.selectbox('읍면동 (선택)',[None]+eup_options,format_func=lambda x:'선택 안 함' if x is None else f'읍면동 조사코드 {x}',key='eup')
             user=dict(age=age,gender=gender,household=household,income=income,education=education,
@@ -117,6 +120,9 @@ with tab_person:
             natural_experience=experienced_from_features(row)
             inverse={v:k for k,v in SIDO_CODES.items()}
             form_sido=inverse[int(float(row['CO11']))]
+            if pd.notna(row.get('CO12')):
+                hit=codes[(codes.sido==form_sido)&(codes.CO12==int(float(row['CO12'])))]
+                nearby_sigungu=hit.iloc[0].sigungu if len(hit) else None
             st.write(f"**{form_sido} · {2025-int(row['SQ7_1'])}세 · {'남성' if str(row['SQ6'])=='1' else '여성'}**")
             st.caption('같은 실제 응답자의 전체 입력으로 모델을 실행합니다. 학습 자료에 포함된 시연 사례이며 검증용 테스트 표본이 아닙니다.')
             st.write('조사에 기록된 경험: '+(' · '.join(natural_experience) or '없음'))
@@ -166,6 +172,25 @@ with tab_person:
             st.altair_chart(score_chart(fac['recommendations'],'시설'),use_container_width=True)
             if result['input_info']['mode']!='full_record' or fac['input_info']['mode']!='full_record':
                 st.info('간편 입력 추천입니다. 입력하지 않은 설문 항목은 학습 때와 같은 결측 규칙으로 처리했습니다.')
+            preferred=fac['recommendations']['시설'].tolist()
+            near,origin_label=nearby_facilities(form_sido,nearby_sigungu,preferred)
+            st.divider();st.subheader('가까운 시설')
+            st.caption(f'{origin_label} 중심에서 가까운 순서입니다. 직선거리 기준이며, 가까운 25곳 중 추천 시설 유형을 먼저 보여줍니다.')
+            pref_set={t.replace(' ','') for t in preferred}
+            near_types={x['type'].replace(' ','') for x in near}
+            show_tag=bool(near_types&pref_set) and not near_types<=pref_set
+            for x in near:
+                dist='1km 미만' if x['거리_km']<1 else f"{x['거리_km']:.0f}km"
+                cap=f" · 최대 {x['capacity']:,}명" if x.get('capacity') else ''
+                tag='　🌿 추천 유형' if show_tag and x['type'].replace(' ','') in pref_set else ''
+                kakao=f"https://map.kakao.com/link/to/{quote(x['name'])},{x['lat']},{x['lon']}"
+                naver=f"https://map.naver.com/p/search/{quote(x['name'])}"
+                phone=f" · [전화](tel:{x['tel']})" if x.get('tel') else ''
+                st.markdown(
+                    f"**{x['name']}**　{dist}{tag}  \n"
+                    f"{x['type']}{cap} · {x.get('addr') or x['sido']}  \n"
+                    f"[카카오맵 길찾기]({kakao}) · [네이버 지도]({naver}){phone}")
+            st.caption('휴양림·치유의숲 좌표는 전국휴양림표준데이터·치유의숲 현황(공공데이터)입니다. 길찾기를 누르면 지도 앱에서 현재 위치 기준 경로가 열립니다.')
         elif saved:
             st.info('입력이 바뀌었습니다. 추천 버튼을 눌러 새 결과를 확인하세요.')
         else:

@@ -57,6 +57,11 @@ def extract(project):
     shutil.copy2(an/'pkgC_operations/optimization_v2_allocation.csv',out/'optimization_allocation_reference.csv')
     shutil.copy2(ext/'시군구_격차지수.csv',out/'sigungu_index.csv')
     shutil.copy2(an/'변수_전체목록.csv',out/'feature_dictionary.csv')
+    # Facility coordinates and 시군구 centroids for the distance-sorted nearby list
+    # (verified public data; same artifacts the 숲BTI web demo assembles).
+    webapp=an/'personal_recommender/webapp/data'
+    shutil.copy2(webapp/'facilities.json',out/'facilities.json')
+    shutil.copy2(webapp/'sigungu_centroids.json',out/'sigungu_centroids.json')
 
     # Administrative codes are observed survey codes, never inferred from postal codes.
     codes=raw[['CO11','CO12','CO13']].drop_duplicates().astype(int)
@@ -111,7 +116,9 @@ def extract(project):
                       an/'pkgC_operations/param_reality_check.csv',
                       ext/'시군구_수급_자연휴양림.csv',
                       project/'본선_준비/experiments/results/regional_supply_indicators.csv',
-                      ext/'(증빙) 수입지출 세부현황(2023년).xlsx']
+                      ext/'(증빙) 수입지출 세부현황(2023년).xlsx',
+                      webapp/'facilities.json',
+                      webapp/'sigungu_centroids.json']
     dump(out/'provenance.json',{str(p.relative_to(project)):hashlib.sha256(p.read_bytes()).hexdigest() for p in selected_sources})
     from utils.optimize import run_optimization
     result=run_optimization(const['budget_won'],const['cost_per_run_won'],const['capacity'],const['target_rate'])

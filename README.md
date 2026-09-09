@@ -77,6 +77,7 @@ GAP 6개와 시설 13개의 `.cbm`은 `models/gap_activity/`, `models/facility/`
 - **전체 설문 CSV:** 전처리된 코드 이름의 1행을 불러옵니다. GAP 409열을 요구하며, 시설 498열까지 있으면 해당 모델에도 전체 입력이 제공됩니다. 원시 타깃 열이 들어 있어도 모델 스키마 밖의 열은 추론에 전달하지 않습니다.
 - 경험한 활동은 입력 선택과 실제 Q10에 기록된 경험의 합집합으로 제외합니다. 6개 모두 경험했으면 결과를 억지로 채우지 않고 빈 후보 안내를 표시합니다.
 - 차트의 0–100점은 `.cbm` 모델의 `predict_proba` 값에 100을 곱한 것입니다. 개인의 실제 참여확률로 보정된 값은 아닙니다. 점수나 순위를 임의 생성하지 않습니다.
+- **가까운 시설:** 선택한 시군구(없으면 시도) 중심 좌표에서 시설까지의 직선거리를 계산해 가까운 순으로 6곳을 보여주고, 추천 시설 유형을 먼저 정렬합니다. 좌표는 `data/facilities.json`(전국휴양림표준데이터·치유의숲 현황, WGS84 221개소), 중심 좌표는 `data/sigungu_centroids.json`(시군구 행정경계 중심)입니다. 새 모델·새 점수 없이 거리 계산만 합니다. 카카오맵 길찾기·네이버 지도 링크는 지도 앱에서 현재 위치 기준 경로를 엽니다.
 
 GAP 참고 성능은 기존 가구그룹 5-fold OOF입니다. P@1 0.681, P@2 0.555, LRAP 0.843, Macro-F1 0.591, Macro PR-AUC는 fold 평균 0.585 / OOF 통합 약 0.582입니다. P@k는 GAP 양성 활동이 있는 5,579명만 포함하며 양성이 없는 2,047명을 제외합니다. 시설 Macro-F1 0.6604, LRAP 0.8270, P@2 0.7201입니다.
 
@@ -108,7 +109,7 @@ subject to
 ## 2–3분 시연 순서
 
 1. 개인 맞춤 추천에서 정보를 입력하고 등산·트레킹형과 자연감상·산책형을 경험 목록에 선택합니다. 필요한 경우 세부 경험도 입력합니다.
-2. 새로운 활동 추천 받기를 누르고 경험한 활동이 Top 3에 없음을 확인합니다. 전체 설문 추론은 실제 조사 응답 시연 모드에서 확인합니다.
+2. 새로운 활동 추천 받기를 누르고 경험한 활동이 Top 3에 없음을 확인합니다. 아래 추천 시설 유형과 시군구 기준 가까운 시설·카카오맵 길찾기를 함께 보여줍니다. 전체 설문 추론은 실제 조사 응답 시연 모드에서 확인합니다.
 3. 운영 최적화에서 기본 63.21억원을 확인하고 최적 배분 실행을 누릅니다.
 4. 지역별 운영횟수, 같은 총량의 기준선 비교, 예산 사용률과 필요 인력-회차를 설명합니다. 예산/목표율을 바꿔 다시 실행합니다.
 
@@ -131,6 +132,6 @@ python -m unittest discover -s tests -v
 
 ## 파일 구성
 
-`app.py`, `assets/{style.css,forest-scene.svg}`, `utils/{preprocessing,recommend,regional,optimize}.py`, `train_models.py`, `extract_data.py`, `models/{gap_activity,facility}/`, `data/`, `tests/`, `SOURCE_AUDIT.md`가 핵심입니다. 화면 스타일과 숲 일러스트도 저장소 안의 파일을 사용합니다. `data/provenance.json`에 원본 파일 SHA-256을 저장합니다. `data/optimization_result.csv`는 준비 시 기본값으로 실제 계산한 결과이며 앱에서는 매번 요청 조건으로 다시 계산합니다.
+`app.py`, `assets/{style.css,forest-scene.svg}`, `utils/{preprocessing,recommend,regional,optimize,nearby}.py`, `train_models.py`, `extract_data.py`, `models/{gap_activity,facility}/`, `data/`, `tests/`, `SOURCE_AUDIT.md`가 핵심입니다. 화면 스타일과 숲 일러스트도 저장소 안의 파일을 사용합니다. `data/provenance.json`에 원본 파일 SHA-256을 저장합니다. `data/optimization_result.csv`는 준비 시 기본값으로 실제 계산한 결과이며 앱에서는 매번 요청 조건으로 다시 계산합니다.
 
 Streamlit의 [탭](https://docs.streamlit.io/develop/api-reference/layout/st.tabs)으로 두 화면을 구성하고, [AppTest](https://docs.streamlit.io/develop/api-reference/app-testing/st.testing.v1.apptest)로 입력과 클릭 흐름을 검증합니다. 탭 변경만으로 최적화나 재학습이 실행되지 않도록 계산은 버튼 안에 둡니다.

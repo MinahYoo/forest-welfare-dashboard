@@ -48,6 +48,12 @@ P@k는 양성 GAP 활동이 있는 5,579명을 대상으로 하며 2,047명은 �
 
 다른 supply-adjusted 후속 산출물도 있지만 최종 운영 최적화와 산식이 다른 지수를 섞지 않았습니다.
 
+### C-2. 가까운 시설 좌표
+
+- `분석산출물/personal_recommender/webapp/data/facilities.json`: 시설 221개소(자연휴양림 182 + 치유의숲 39)의 이름·유형·시도·주소·WGS84 위경도·수용인원·전화·홈페이지. 원천은 `전국휴양림표준데이터`(공공데이터포털)와 `치유의숲_현황`(산림청). 숲BTI 웹 데모가 쓰는 것과 동일한 파일입니다.
+- `분석산출물/personal_recommender/webapp/data/sigungu_centroids.json`: 시군구 행정경계(GeoJSON) 중심 좌표 229개 + 시도 평균 좌표 17개.
+- `utils/nearby.py`는 선택 시군구(없으면 시도) 중심에서 각 시설까지 하버사인 직선거리를 계산해 가까운 25곳을 추리고, 추천 시설 유형을 우선해 6곳을 표시합니다. 새 좌표를 추정하거나 새 점수를 만들지 않습니다. 통합시 자치구는 상위 시(예: 수원시영통구 → 수원시) 중심으로, 미매칭 시군구는 시도 중심으로 대체합니다.
+
 ## D. 최종 최적화 코드
 
 확인 코드: `분석산출물/pkgC_operations/pkgC_optimization_v2.py`.
@@ -78,6 +84,6 @@ P@k는 양성 GAP 활동이 있는 5,579명을 대상으로 하며 2,047명은 �
 ## F. 새로 추출·저장한 파일
 
 - `train_models.py` → GAP 6개 + 시설 13개 `.cbm`, 열 순서/범주/결측 규칙의 schema, 파일 해시 manifest. 저장 전후 예측 일치 검사 완료.
-- `extract_data.py` → `regional_index.csv`, `optimization_input.csv`, `optimization_result.csv`, `optimization_constants.json`, `region_codes.csv`, 성능·라벨·출처 자료, 실제 동일 응답자의 전체 설문 시연 행.
+- `extract_data.py` → `regional_index.csv`, `optimization_input.csv`, `optimization_result.csv`, `optimization_constants.json`, `region_codes.csv`, 성능·라벨·출처 자료, 실제 동일 응답자의 전체 설문 시연 행, `facilities.json`·`sigungu_centroids.json`(웹 데모 산출물 그대로 복사, provenance에 SHA-256 기록).
 - 시군구 명칭은 기존 로컬 `sgg_geo.json`의 조사코드와 매칭했습니다. 파일 부재 시 관측 조사코드를 표시합니다. **읍면동 명칭표는 현재 프로젝트 파일에서 찾지 못해 명칭을 만들지 않고 코드로 표시합니다.**
 - 앱은 저장된 파일만 읽습니다. 원본 경로는 재생성 때만 필요합니다. 상세 설치·시연·검증 방법은 `README.md`를 따릅니다.
